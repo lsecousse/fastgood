@@ -103,6 +103,49 @@ public class ClientOverpassShould
     }
 
     [Fact]
+    public async Task PasserALaSecondeInstanceQuandLaReponseNEstPasDuJson()
+    {
+        var handler = new HandlerFactice(r => Task.FromResult(
+            Ok(r.RequestUri!.Host.StartsWith("lz4") ? "<html>Surchargé</html>" : ReponseUnLieu)));
+
+        var lieux = await Client(handler).Chercher(ZoneParis, CancellationToken.None);
+
+        Assert.Single(lieux);
+        Assert.Equal(2, handler.Requetes.Count);
+    }
+
+    [Fact]
+    public async Task LeverOverpassIndisponibleQuandToutesRepondentDuJsonInvalide()
+    {
+        var handler = new HandlerFactice(_ => Task.FromResult(Ok("pas du json")));
+
+        await Assert.ThrowsAsync<OverpassIndisponible>(() => Client(handler).Chercher(ZoneParis, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task PasserALaSecondeInstanceQuandOverpassSignaleUneErreurDExecution()
+    {
+        const string partielle = "{\"remark\":\"runtime error: Query timed out in \\\"query\\\" at line 1 after 26 seconds.\",\"elements\":[]}";
+        var handler = new HandlerFactice(r => Task.FromResult(
+            Ok(r.RequestUri!.Host.StartsWith("lz4") ? partielle : ReponseUnLieu)));
+
+        var lieux = await Client(handler).Chercher(ZoneParis, CancellationToken.None);
+
+        Assert.Single(lieux);
+    }
+
+    [Fact]
+    public async Task AccepterUneRemarqueQuiNEstPasUneErreurDExecution()
+    {
+        var handler = new HandlerFactice(_ => Task.FromResult(Ok("{\"remark\":\"info\",\"elements\":[]}")));
+
+        var lieux = await Client(handler).Chercher(ZoneParis, CancellationToken.None);
+
+        Assert.Empty(lieux);
+        Assert.Single(handler.Requetes);
+    }
+
+    [Fact]
     public async Task NeJamaisLancerDeuxAppelsSimultanes()
     {
         var enCours = 0;

@@ -8,13 +8,15 @@ public class CatalogueLieuxShould
     {
         public List<Zone> Zones { get; } = [];
         public bool Echoue { get; set; }
+        public TimeSpan Latence { get; set; }
 
-        public Task<IReadOnlyList<Lieu>> Chercher(Zone zone, CancellationToken ct)
+        public async Task<IReadOnlyList<Lieu>> Chercher(Zone zone, CancellationToken ct)
         {
-            Zones.Add(zone);
+            lock (Zones) Zones.Add(zone);
+            await Task.Delay(Latence, ct);
             return Echoue
                 ? throw new OverpassIndisponible()
-                : Task.FromResult<IReadOnlyList<Lieu>>([new Lieu("node", 1, "Chez Test", Categories.FastFood, null, 48.85, 2.34)]);
+                : ([new Lieu("node", 1, "Chez Test", Categories.FastFood, null, 48.85, 2.34)]);
         }
     }
 
@@ -57,5 +59,17 @@ public class CatalogueLieuxShould
 
         Assert.Single(lieux);
         Assert.Equal(2, _client.Zones.Count);
+    }
+
+    [Fact]
+    public async Task NAppelerOverpassQuUneFoisPourDeuxRecherchesSimultaneesDeLaMemeZone()
+    {
+        var catalogue = Catalogue();
+        var zone = new Zone(48.850, 2.340, 48.860, 2.350);
+        _client.Latence = TimeSpan.FromMilliseconds(50);
+
+        await Task.WhenAll(catalogue.Chercher(zone, CancellationToken.None), catalogue.Chercher(zone, CancellationToken.None));
+
+        Assert.Single(_client.Zones);
     }
 }

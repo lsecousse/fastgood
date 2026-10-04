@@ -11,13 +11,26 @@ public sealed class CatalogueLieux(IClientOverpass client, IMemoryCache cache) :
 {
     private static readonly TimeSpan DureeDeCache = TimeSpan.FromHours(24);
 
+    private readonly SemaphoreSlim _uneRechercheALaFois = new(1, 1);
+
     public async Task<IReadOnlyList<Lieu>> Chercher(Zone zone, CancellationToken ct)
     {
         var zoneArrondie = zone.ArrondieVersExterieur();
-        if (cache.TryGetValue(zoneArrondie.Cle(), out IReadOnlyList<Lieu>? enCache) && enCache is not null) return enCache;
+        var cle = zoneArrondie.Cle();
+        if (EnCache(cle) is { } lieux) return lieux;
 
-        var lieux = await client.Chercher(zoneArrondie, ct);
-        cache.Set(zoneArrondie.Cle(), lieux, DureeDeCache);
-        return lieux;
+        await _uneRechercheALaFois.WaitAsync(ct);
+        try
+        {
+            return EnCache(cle) ?? Memoriser(cle, await client.Chercher(zoneArrondie, ct));
+        }
+        finally
+        {
+            _uneRechercheALaFois.Release();
+        }
     }
+
+    private IReadOnlyList<Lieu>? EnCache(string cle) => cache.Get<IReadOnlyList<Lieu>>(cle);
+
+    private IReadOnlyList<Lieu> Memoriser(string cle, IReadOnlyList<Lieu> lieux) => cache.Set(cle, lieux, DureeDeCache);
 }

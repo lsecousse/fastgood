@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace FastFood.Lieux;
 
 public sealed class OverpassIndisponible : Exception
@@ -31,8 +33,8 @@ public sealed class ClientOverpass(HttpClient http, IReadOnlyList<Uri> instances
         {
             foreach (var instance in instances)
             {
-                var json = await EssayerInstance(instance, requete, ct);
-                if (json is not null) return LecteurOverpass.Lire(json);
+                var lieux = await EssayerInstance(instance, requete, ct);
+                if (lieux is not null) return lieux;
             }
             throw new OverpassIndisponible();
         }
@@ -42,15 +44,19 @@ public sealed class ClientOverpass(HttpClient http, IReadOnlyList<Uri> instances
         }
     }
 
-    private async Task<string?> EssayerInstance(Uri instance, string requete, CancellationToken ct)
+    private async Task<IReadOnlyList<Lieu>?> EssayerInstance(Uri instance, string requete, CancellationToken ct)
     {
         try
         {
             using var corps = new StringContent("data=" + Uri.EscapeDataString(requete), null, "application/x-www-form-urlencoded");
             using var reponse = await http.PostAsync(instance, corps, ct);
-            return reponse.IsSuccessStatusCode ? await reponse.Content.ReadAsStringAsync(ct) : null;
+            return reponse.IsSuccessStatusCode ? LireSiComplete(await reponse.Content.ReadAsStringAsync(ct)) : null;
         }
         catch (HttpRequestException)
+        {
+            return null;
+        }
+        catch (Exception e) when (e is JsonException or KeyNotFoundException or InvalidOperationException)
         {
             return null;
         }
@@ -58,5 +64,13 @@ public sealed class ClientOverpass(HttpClient http, IReadOnlyList<Uri> instances
         {
             return null;
         }
+    }
+
+    private static IReadOnlyList<Lieu>? LireSiComplete(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+        var remarque = document.RootElement.TryGetProperty("remark", out var r) ? r.GetString() : null;
+        var erreurDExecution = remarque?.StartsWith("runtime error", StringComparison.Ordinal) ?? false;
+        return erreurDExecution ? null : LecteurOverpass.Lire(json);
     }
 }

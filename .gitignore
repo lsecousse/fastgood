@@ -1,2 +1,5 @@
 .claude/worktrees/
 .superpowers/
+bin/
+obj/
+*.db

@@ -1,0 +1,223 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-04T15:17:50Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1133077173,
+  "lat": 48.8521335,
+  "lon": 2.3485297,
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Subway",
+    "brand:wikidata": "Q244457",
+    "brand:wikipedia": "en:Subway (restaurant)",
+    "check_date": "2026-07-31",
+    "cuisine": "sandwich",
+    "indoor_seating": "yes",
+    "name": "Subway",
+    "opening_hours": "Mo-Su 00:00-02:00,05:00-24:00",
+    "outdoor_seating": "no",
+    "phone": "+33 9 81 93 21 62",
+    "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011",
+    "takeaway": "yes",
+    "website": "https://restaurants.subwayfrance.fr/fr/ile-de-france/paris/paris/subway-paris-notre-dame-43",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2529729741,
+  "lat": 48.8529105,
+  "lon": 2.3461680,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "crepe",
+    "name": "Next crêpes"
+  }
+},
+{
+  "type": "node",
+  "id": 2534780308,
+  "lat": 48.8528817,
+  "lon": 2.3458751,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date": "2022-12-22",
+    "cuisine": "couscous;arab",
+    "diet:halal": "only",
+    "name": "Oriental Bowl",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2534780320,
+  "lat": 48.8531215,
+  "lon": 2.3453559,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "crepe",
+    "name": "Le Minos"
+  }
+},
+{
+  "type": "node",
+  "id": 2575207491,
+  "lat": 48.8524803,
+  "lon": 2.3451902,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "kebab",
+    "name": "Paris Antalya",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 2575207516,
+  "lat": 48.8525232,
+  "lon": 2.3451020,
+  "tags": {
+    "addr:street": "Rue Xavier Privas",
+    "amenity": "restaurant",
+    "check_date": "2023-04-29",
+    "cuisine": "kebab",
+    "name": "Maison de Gyros"
+  }
+},
+{
+  "type": "node",
+  "id": 2575207521,
+  "lat": 48.8527933,
+  "lon": 2.3454077,
+  "tags": {
+    "addr:street": "Rue Xavier Privas",
+    "amenity": "fast_food",
+    "brand": "Chicken Spot",
+    "brand:wikidata": "Q133872934",
+    "cuisine": "burger;chicken",
+    "diet:halal": "yes",
+    "name": "Chicken Spot",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3350297393,
+  "lat": 48.8526520,
+  "lon": 2.3469173,
+  "tags": {
+    "addr:city": "Paris",
+    "addr:housenumber": "41",
+    "addr:postcode": "75005",
+    "addr:street": "Rue de la Bûcherie",
+    "amenity": "restaurant",
+    "cuisine": "pizza",
+    "name": "La Bûcherie",
+    "source": "survey",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 3350313193,
+  "lat": 48.8524569,
+  "lon": 2.3462754,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "pizza",
+    "name": "Pizza Verone"
+  }
+},
+{
+  "type": "node",
+  "id": 4081798967,
+  "lat": 48.8529293,
+  "lon": 2.3455743,
+  "tags": {
+    "addr:city": "Paris",
+    "addr:housenumber": "8",
+    "addr:postcode": "75005",
+    "addr:street": "Rue Xavier Privas",
+    "air_conditioning": "no",
+    "amenity": "fast_food",
+    "cuisine": "falafel",
+    "diet:vegan": "only",
+    "indoor_seating": "yes",
+    "name": "Maoz",
+    "opening_hours": "Su-We 11:00-23:00; Th-Sa 11:00-02:00",
+    "outdoor_seating": "no",
+    "smoking": "no",
+    "website": "https://maozusa.com",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 5909992947,
+  "lat": 48.8523251,
+  "lon": 2.3457552,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "turkish",
+    "indoor_seating": "yes",
+    "level": "0",
+    "name": "Chawarma",
+    "outdoor_seating": "yes",
+    "smoking": "outside",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 9949549851,
+  "lat": 48.8529088,
+  "lon": 2.3455383,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "burger",
+    "indoor_seating": "yes",
+    "name": "French Toque",
+    "outdoor_seating": "no",
+    "website": "https://www.stand-traiteur-foodtruck-paris.fr/"
+  }
+},
+{
+  "type": "node",
+  "id": 11793865192,
+  "lat": 48.8544828,
+  "lon": 2.3453228,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date": "2025-09-30",
+    "indoor_seating": "yes",
+    "name": "Stratto",
+    "outdoor_seating": "no",
+    "ref:FR:SIRET": "38480812700060"
+  }
+},
+{
+  "type": "node",
+  "id": 11867341678,
+  "lat": 48.8533726,
+  "lon": 2.3453043,
+  "tags": {
+    "addr:housenumber": "21",
+    "addr:postcode": "75005",
+    "addr:street": "Quai Saint-Michel",
+    "amenity": "fast_food",
+    "check_date": "2026-04-11",
+    "cuisine": "burger",
+    "name": "Foshiso Maniso",
+    "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2010"
+  }
+}
+
+  ]
+}

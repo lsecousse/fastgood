@@ -86,6 +86,12 @@ verifier_egal "PremierPidEtrangerShould.DonnerLeSeulOccupant" "777" "$(premier_p
 verifier_egal "PremierPidEtrangerShould.IgnorerLeServiceDuLabel" "777" "$(premier_pid_etranger 412 412 777 2>/dev/null)"
 verifier_egal "PremierPidEtrangerShould.NeRienDonnerSiSeulLeServiceEcoute" "" "$(premier_pid_etranger 412 412 2>/dev/null)"
 
+# --- revenir_en_arriere (installer.sh, non sourçable : lecture de la source) ---
+# Sans version précédente, le LaunchAgent KeepAlive doit être arrêté avant de sortir, sinon il plante en boucle.
+SANS_PRECEDENT="$(grep -F 'il n'"'"'y a pas de version précédente' "$ICI/../installer.sh")"
+verifier_egal "RevenirEnArriereShould.ArreterLeServiceAvantDEchouerSansVersionPrecedente" \
+  "arreter_service; echec" "$(printf '%s' "$SANS_PRECEDENT" | grep -o 'arreter_service; echec')"
+
 echo
 echo "$reussites réussi(s), $echecs échec(s)"
 [ "$echecs" -eq 0 ]

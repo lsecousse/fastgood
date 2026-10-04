@@ -101,7 +101,7 @@ repond() { curl -fsS -o /dev/null --max-time 2 "$URL/api/sante" 2>/dev/null; }
 attendre_sante() { attendre_jusqu_a "$DELAI_SANTE" repond; }
 
 revenir_en_arriere() {
-  [ -d "$APP_PRECEDENT" ] || echec "la nouvelle version ne répond pas et il n'y a pas de version précédente (journal : $JOURNAL)."
+  [ -d "$APP_PRECEDENT" ] || { arreter_service; echec "la nouvelle version ne répond pas et il n'y a pas de version précédente : service arrêté (journal : $JOURNAL)."; }
   echo "  retour à la version précédente" >&2
   arreter_service
   rm -rf "$APP"

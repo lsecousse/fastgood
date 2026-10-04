@@ -56,7 +56,7 @@ public sealed class ClientOverpass(HttpClient http, IReadOnlyList<Uri> instances
         {
             return null;
         }
-        catch (Exception e) when (e is JsonException or KeyNotFoundException or InvalidOperationException)
+        catch (Exception e) when (e is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
             return null;
         }

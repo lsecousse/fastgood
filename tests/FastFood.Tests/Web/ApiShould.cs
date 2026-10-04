@@ -22,7 +22,20 @@ public sealed class ApiShould : IDisposable
         public Task<IReadOnlyList<Lieu>> Chercher(Zone zone, CancellationToken ct) => Task.FromResult(reponse());
     }
 
-    private HttpClient Client(Func<IReadOnlyList<Lieu>>? catalogue = null)
+    private sealed class DepotEspion : IDepotNotes
+    {
+        public string? DernierNomLieu { get; private set; }
+
+        public void Enregistrer(string type, long id, string nomLieu, string prenom, int etoiles, string? commentaire) =>
+            DernierNomLieu = nomLieu;
+
+        public IReadOnlyList<Note> Lister(string type, long id) => [];
+
+        public IReadOnlyDictionary<(string Type, long Id), Moyenne> Moyennes(IEnumerable<(string Type, long Id)> lieux) =>
+            new Dictionary<(string Type, long Id), Moyenne>();
+    }
+
+    private HttpClient Client(Func<IReadOnlyList<Lieu>>? catalogue = null, Action<IServiceCollection>? surcharger = null)
     {
         var lieux = catalogue ?? (() => [Quick]);
         _usine = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
@@ -31,6 +44,7 @@ public sealed class ApiShould : IDisposable
             b.ConfigureTestServices(s =>
             {
                 s.AddSingleton<ICatalogueLieux>(new CatalogueFactice(lieux));
+                surcharger?.Invoke(s);
             });
         });
         return _usine.CreateClient();
@@ -144,6 +158,17 @@ public sealed class ApiShould : IDisposable
         var notes = await Json(await client.GetAsync("/api/lieux/node/1/notes"));
 
         Assert.Equal((1, 4), (notes.GetArrayLength(), notes[0].GetProperty("etoiles").GetInt32()));
+    }
+
+    [Fact]
+    public async Task TronquerLeNomDuLieuA200Caracteres()
+    {
+        var depot = new DepotEspion();
+        var client = Client(surcharger: s => s.AddSingleton<IDepotNotes>(depot));
+
+        await client.PutAsJsonAsync("/api/lieux/node/1/notes/Lionel", new { etoiles = 3, nomLieu = "  " + new string('a', 250) });
+
+        Assert.Equal(new string('a', 200), depot.DernierNomLieu);
     }
 
     [Fact]

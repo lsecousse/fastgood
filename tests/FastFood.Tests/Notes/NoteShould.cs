@@ -49,4 +49,24 @@ public class NoteShould
 
         Assert.Equal("Le prénom est obligatoire (40 caractères au plus).", erreur);
     }
+
+    [Theory]
+    [InlineData("Lio/nel")]
+    [InlineData("Lio\\nel")]
+    [InlineData(".")]
+    [InlineData("..")]
+    public void RefuserUnPrenomQuiCasseLeChemin(string prenom)
+    {
+        var erreur = Note.Valider(prenom, 3, null);
+
+        Assert.Equal("Le prénom ne peut pas contenir / ni \\ ni n'être que des points.", erreur);
+    }
+
+    [Fact]
+    public void AccepterUnPrenomAvecUnPoint()
+    {
+        var erreur = Note.Valider("Zoé B.", 3, null);
+
+        Assert.Null(erreur);
+    }
 }

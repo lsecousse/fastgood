@@ -9,10 +9,14 @@ public sealed record Note(string Prenom, int Etoiles, string? Commentaire, DateT
     {
         var longueurPrenom = prenom?.Trim().Length ?? 0;
         if (longueurPrenom is 0 or > PrenomMax) return "Le prénom est obligatoire (40 caractères au plus).";
+        if (CasseLeChemin(prenom!.Trim())) return "Le prénom ne peut pas contenir / ni \\ ni n'être que des points.";
         if (etoiles is < 1 or > 5) return "La note va de 1 à 5 étoiles.";
         if ((commentaire?.Trim().Length ?? 0) > CommentaireMax) return "Le commentaire fait 280 caractères au plus.";
         return null;
     }
+
+    private static bool CasseLeChemin(string prenom) =>
+        prenom.Contains('/') || prenom.Contains('\\') || prenom.All(c => c == '.');
 }
 
 public sealed record Moyenne(double Valeur, int Nombre);

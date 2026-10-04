@@ -6,6 +6,7 @@ namespace FastFood.Web;
 public static class RoutesApi
 {
     private static readonly string[] TypesOsm = ["node", "way", "relation"];
+    private const int NomLieuMax = 200;
 
     public sealed record CorpsNote(int Etoiles, string? Commentaire, string? NomLieu);
 
@@ -49,6 +50,12 @@ public static class RoutesApi
             : new LieuNote(l.Type, l.Id, l.Nom, l.Categorie, l.Cuisine, l.Lat, l.Lon, null, 0));
     }
 
+    private static string NomLieu(string? saisi)
+    {
+        var nom = saisi?.Trim() ?? "";
+        return nom.Length > NomLieuMax ? nom[..NomLieuMax] : nom;
+    }
+
     private static IResult ListerNotes(string type, long id, IDepotNotes depot) =>
         TypesOsm.Contains(type)
             ? Results.Ok(depot.Lister(type, id))
@@ -60,7 +67,7 @@ public static class RoutesApi
         var message = Note.Valider(prenom, corps.Etoiles, corps.Commentaire);
         if (message is not null) return Erreur(400, "note_invalide", message);
 
-        depot.Enregistrer(type, id, corps.NomLieu ?? "", prenom.Trim(), corps.Etoiles, corps.Commentaire);
+        depot.Enregistrer(type, id, NomLieu(corps.NomLieu), prenom.Trim(), corps.Etoiles, corps.Commentaire);
         return Results.NoContent();
     }
 }

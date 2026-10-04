@@ -38,6 +38,17 @@ public sealed class DepotNotesShould : IDisposable
     }
 
     [Fact]
+    public void RemplacerLaNoteDElodieSansTenirCompteDeLaCasseAccentuee()
+    {
+        _sut.Enregistrer("node", 1, "Subway", "Élodie", 2, null);
+        _sut.Enregistrer("node", 1, "Subway", "élodie", 4, null);
+
+        var note = Assert.Single(_sut.Lister("node", 1));
+
+        Assert.Equal(("élodie", 4), (note.Prenom, note.Etoiles));
+    }
+
+    [Fact]
     public void RetirerLesEspacesDeBordDuPrenom()
     {
         _sut.Enregistrer("node", 1, "Subway", "  Lionel  ", 3, null);

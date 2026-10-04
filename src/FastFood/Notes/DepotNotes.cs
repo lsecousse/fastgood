@@ -16,19 +16,20 @@ public sealed class DepotNotes(string cheminBase, TimeProvider horloge) : IDepot
         CREATE TABLE IF NOT EXISTS notes (
             type TEXT NOT NULL,
             osm_id INTEGER NOT NULL,
-            prenom TEXT NOT NULL COLLATE NOCASE,
+            prenom_cle TEXT NOT NULL,
+            prenom TEXT NOT NULL,
             etoiles INTEGER NOT NULL,
             commentaire TEXT NULL,
             nom_lieu TEXT NOT NULL,
             modifiee_le TEXT NOT NULL,
-            PRIMARY KEY (type, osm_id, prenom)
+            PRIMARY KEY (type, osm_id, prenom_cle)
         )
         """;
 
     private const string Upsert = """
-        INSERT INTO notes (type, osm_id, prenom, etoiles, commentaire, nom_lieu, modifiee_le)
-        VALUES ($type, $id, $prenom, $etoiles, $commentaire, $nomLieu, $modifieeLe)
-        ON CONFLICT (type, osm_id, prenom) DO UPDATE SET
+        INSERT INTO notes (type, osm_id, prenom_cle, prenom, etoiles, commentaire, nom_lieu, modifiee_le)
+        VALUES ($type, $id, $prenomCle, $prenom, $etoiles, $commentaire, $nomLieu, $modifieeLe)
+        ON CONFLICT (type, osm_id, prenom_cle) DO UPDATE SET
             prenom = excluded.prenom,
             etoiles = excluded.etoiles,
             commentaire = excluded.commentaire,
@@ -39,8 +40,10 @@ public sealed class DepotNotes(string cheminBase, TimeProvider horloge) : IDepot
     public void Enregistrer(string type, long id, string nomLieu, string prenom, int etoiles, string? commentaire)
     {
         var texte = string.IsNullOrWhiteSpace(commentaire) ? null : commentaire.Trim();
+        var saisi = prenom.Trim();
         using var connexion = Ouvrir();
-        using var commande = Commande(connexion, Upsert, ("$type", type), ("$id", id), ("$prenom", prenom.Trim()),
+        using var commande = Commande(connexion, Upsert, ("$type", type), ("$id", id),
+            ("$prenomCle", saisi.ToLowerInvariant()), ("$prenom", saisi),
             ("$etoiles", etoiles), ("$commentaire", texte), ("$nomLieu", nomLieu),
             ("$modifieeLe", horloge.GetUtcNow().ToString("O", CultureInfo.InvariantCulture)));
         commande.ExecuteNonQuery();

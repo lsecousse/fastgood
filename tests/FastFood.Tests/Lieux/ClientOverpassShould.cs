@@ -115,6 +115,19 @@ public class ClientOverpassShould
     }
 
     [Fact]
+    public async Task PasserALaSecondeInstanceQuandUnIdentifiantEstMalForme()
+    {
+        const string idDecimal =
+            "{\"elements\":[{\"type\":\"node\",\"id\":1.5,\"lat\":48.85,\"lon\":2.34,\"tags\":{\"amenity\":\"fast_food\"}}]}";
+        var handler = new HandlerFactice(r => Task.FromResult(
+            Ok(r.RequestUri!.Host.StartsWith("lz4") ? idDecimal : ReponseUnLieu)));
+
+        var lieux = await Client(handler).Chercher(ZoneParis, CancellationToken.None);
+
+        Assert.Equal("Chez Test", Assert.Single(lieux).Nom);
+    }
+
+    [Fact]
     public async Task LeverOverpassIndisponibleQuandToutesRepondentDuJsonInvalide()
     {
         var handler = new HandlerFactice(_ => Task.FromResult(Ok("pas du json")));

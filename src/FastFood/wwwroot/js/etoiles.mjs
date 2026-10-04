@@ -1,4 +1,4 @@
-const enFrancais = (nombre) => String(nombre).replace(".", ",");
+const enFrancais = (nombre) => String(Math.round(nombre * 10) / 10).replace(".", ",");
 
 export function resumeMoyenne(moyenne, nombre) {
   if (moyenne == null || !nombre) return "Pas encore noté";

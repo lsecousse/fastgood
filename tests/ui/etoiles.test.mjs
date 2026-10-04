@@ -29,3 +29,15 @@ test("libelleEpingle n'affiche pas de décimale pour un entier", () => {
 test("libelleEpingle est vide sans moyenne", () => {
   assert.equal(libelleEpingle(null), "");
 });
+
+test("resumeMoyenne arrondit la moyenne à une décimale", () => {
+  assert.equal(resumeMoyenne(11 / 3, 3), "3,7★ · 3 notes");
+});
+
+test("libelleEpingle arrondit la moyenne à une décimale", () => {
+  assert.equal(libelleEpingle(11 / 3), "3,7");
+});
+
+test("libelleEpingle supprime la décimale inutile après arrondi", () => {
+  assert.equal(libelleEpingle(4.96), "5");
+});

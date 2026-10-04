@@ -30,18 +30,24 @@ function proposerRecherche() {
   $("zoome").hidden = !tropGrande;
 }
 
+let derniereRecherche = 0;
+
 async function chercher() {
+  const numero = ++derniereRecherche;
   $("chercher").hidden = true;
   $("zoome").hidden = true;
   try {
-    carte.afficherLieux(await api.chercherLieux(carte.zoneVisible()));
+    const lieux = await api.chercherLieux(carte.zoneVisible());
+    if (numero === derniereRecherche) carte.afficherLieux(lieux);
   } catch (erreur) {
+    if (numero !== derniereRecherche) return;
     afficherMessage(erreur.message);
     proposerRecherche();
   }
 }
 
 function demarrer() {
+  centrer(PARIS);
   carte.surDeplacement(proposerRecherche);
   $("chercher").addEventListener("click", chercher);
   $("ma-position").addEventListener("click", () =>

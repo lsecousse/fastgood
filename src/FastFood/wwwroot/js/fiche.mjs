@@ -14,6 +14,7 @@ export function creerFiche({ api, stockage, afficherMessage, surNoteEnregistree 
   $("fiche-fermer").addEventListener("click", () => fermer(etat));
   $("changer-prenom").addEventListener("click", () => changerPrenom(etat));
   $("prenom").addEventListener("input", () => rafraichirFormulaire(etat));
+  $("prenom").addEventListener("change", () => preremplir(etat, trouverMaNote(etat.notes, $("prenom").value)));
   $("commentaire").addEventListener("input", () => rafraichirFormulaire(etat));
   $("ma-note").addEventListener("submit", (e) => { e.preventDefault(); enregistrer(etat, deps); });
   return { ouvrir: (lieu) => ouvrir(etat, deps, lieu) };
@@ -127,14 +128,14 @@ async function enregistrer(etat, deps) {
   $("enregistrer").disabled = true;
   try {
     await deps.api.enregistrerNote(lieu.type, lieu.id, prenom, note);
-    memoriserPrenom(etat, deps, prenom);
-    deps.afficherMessage(NOTE_ENREGISTREE);
-    await rechargerApresEnregistrement(etat, deps, lieu);
   } catch (erreur) {
     deps.afficherMessage(erreur.message);
-  } finally {
-    rafraichirFormulaire(etat);
+    return rafraichirFormulaire(etat);
   }
+  memoriserPrenom(etat, deps, prenom);
+  deps.afficherMessage(NOTE_ENREGISTREE);
+  await rechargerApresEnregistrement(etat, deps, lieu);
+  rafraichirFormulaire(etat);
 }
 
 function memoriserPrenom(etat, deps, prenom) {
@@ -143,8 +144,12 @@ function memoriserPrenom(etat, deps, prenom) {
 }
 
 async function rechargerApresEnregistrement(etat, deps, lieu) {
-  const notes = await deps.api.listerNotes(lieu.type, lieu.id);
-  if (etat.lieu === lieu) recevoirNotes(etat, notes);
-  else Object.assign(lieu, moyenneDesNotes(notes));
-  deps.surNoteEnregistree(lieu);
+  try {
+    const notes = await deps.api.listerNotes(lieu.type, lieu.id);
+    if (etat.lieu === lieu) recevoirNotes(etat, notes);
+    else Object.assign(lieu, moyenneDesNotes(notes));
+    deps.surNoteEnregistree(lieu);
+  } catch {
+    // la note est enregistrée : on garde « Note enregistrée » et la fiche telle quelle
+  }
 }

@@ -11,8 +11,12 @@ test("dateEnFrancais écrit le jour, le mois en toutes lettres et l'année", () 
   assert.equal(dateEnFrancais("2026-10-04T10:00:00+00:00"), "4 octobre 2026");
 });
 
+test("dateEnFrancais écrit 1er pour le premier du mois", () => {
+  assert.equal(dateEnFrancais("2026-10-01T10:00:00+00:00"), "1er octobre 2026");
+});
+
 test("dateEnFrancais suit l'heure de Paris", () => {
-  assert.equal(dateEnFrancais("2026-12-31T23:30:00+00:00"), "1 janvier 2027");
+  assert.equal(dateEnFrancais("2026-12-31T23:30:00+00:00"), "1er janvier 2027");
 });
 
 test("trouverMaNote rend la note du prénom", () => {

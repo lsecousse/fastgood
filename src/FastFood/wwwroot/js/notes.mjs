@@ -5,7 +5,9 @@ const FORMAT_DATE = new Intl.DateTimeFormat("fr-FR", {
 });
 
 export function dateEnFrancais(iso) {
-  return FORMAT_DATE.format(new Date(iso));
+  const parties = FORMAT_DATE.formatToParts(new Date(iso));
+  const jour = (valeur) => (valeur === "1" ? "1er" : valeur);
+  return parties.map((p) => (p.type === "day" ? jour(p.value) : p.value)).join("");
 }
 
 export function trouverMaNote(notes, prenom) {

@@ -49,6 +49,17 @@ public sealed class ApiShould : IDisposable
     }
 
     [Fact]
+    public async Task ServirLeManifesteAvecLeBonType()
+    {
+        var client = Client();
+
+        var reponse = await client.GetAsync("/manifest.webmanifest");
+
+        Assert.Equal(HttpStatusCode.OK, reponse.StatusCode);
+        Assert.Equal("application/manifest+json", reponse.Content.Headers.ContentType?.MediaType);
+    }
+
+    [Fact]
     public async Task RendreLesLieuxAvecLeurMoyenne()
     {
         var client = Client();

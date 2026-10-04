@@ -1,6 +1,7 @@
 using FastFood.Lieux;
 using FastFood.Notes;
 using FastFood.Web;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -13,9 +14,16 @@ services.AddSingleton<IDepotNotes>(_ =>
 
 var app = builder.Build();
 app.UseDefaultFiles();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = CreerTypesMime() });
 app.MapApi();
 app.Run();
+
+static FileExtensionContentTypeProvider CreerTypesMime()
+{
+    var types = new FileExtensionContentTypeProvider();
+    types.Mappings[".webmanifest"] = "application/manifest+json";
+    return types;
+}
 
 static HttpClient CreerHttpOverpass()
 {

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FastFood</title>
+  <meta name="theme-color" content="#017AB7">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="FastFood">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/colors_and_type.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script type="module" src="js/app.mjs"></script>
+</head>
+<body>
+  <main id="carte" class="carte" aria-label="Carte des fast-foods"></main>
+
+  <button id="chercher" class="flottant chercher" type="button" hidden>Chercher ici</button>
+  <p id="zoome" class="flottant zoome" hidden>Zoome pour chercher</p>
+
+  <ul class="legende" aria-label="Légende">
+    <li><span class="pastille categorie-fast-food"></span>Fast-food</li>
+    <li><span class="pastille categorie-restaurant-rapide"></span>Restaurant rapide</li>
+    <li><span class="pastille categorie-boulangerie"></span>Boulangerie</li>
+  </ul>
+
+  <button id="ma-position" class="ma-position" type="button" aria-label="Ma position">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+      <path d="M12 1v4M12 19v4M1 12h4M19 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <section id="fiche" class="fiche" aria-labelledby="fiche-nom" aria-hidden="true">
+    <header class="fiche-entete">
+      <div>
+        <h2 id="fiche-nom" class="fiche-nom"></h2>
+        <p id="fiche-categorie" class="fiche-categorie"></p>
+        <p id="fiche-moyenne" class="fiche-moyenne"></p>
+      </div>
+      <button id="fiche-fermer" class="fermer" type="button" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="fiche-corps">
+      <div id="fiche-avis" class="avis" hidden>
+        <h3 class="titre-section">Notes</h3>
+        <ul id="fiche-notes" class="notes"></ul>
+      </div>
+
+      <form id="ma-note" class="ma-note" novalidate>
+        <h3 class="titre-section">Ma note</h3>
+        <label id="bloc-prenom" class="champ">
+          <span>Ton prénom ?</span>
+          <input id="prenom" type="text" maxlength="40" autocomplete="given-name" enterkeyhint="done">
+        </label>
+        <button id="changer-prenom" class="lien" type="button"></button>
+        <div id="etoiles" class="etoiles" role="group" aria-label="Étoiles"></div>
+        <textarea id="commentaire" class="commentaire" maxlength="280" rows="3" aria-label="Commentaire"></textarea>
+        <p id="compteur" class="compteur" aria-live="polite">0 / 280</p>
+        <button id="enregistrer" class="action-principale" type="submit">Enregistrer ma note</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+  </script>
+</body>
+</html>

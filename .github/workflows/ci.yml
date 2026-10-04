@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Build
+        run: dotnet build -c Release
+      - name: Tests .NET
+        run: dotnet test -c Release --no-build
+      - name: Tests front
+        run: node --test "tests/ui/*.test.mjs"
+      - name: Tests de l'installateur
+        run: bash deploy/tests/installer.test.sh

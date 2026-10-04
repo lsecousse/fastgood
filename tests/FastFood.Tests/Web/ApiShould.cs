@@ -172,6 +172,17 @@ public sealed class ApiShould : IDisposable
     }
 
     [Fact]
+    public async Task Repondre400PourUnPrenomAvecUneBarreEncodee()
+    {
+        var client = Client();
+
+        var reponse = await client.PutAsync("/api/lieux/node/1/notes/Lio%2Fnel", Corps("""{"etoiles":3,"nomLieu":"Quick"}"""));
+
+        Assert.Equal((HttpStatusCode.BadRequest, "note_invalide"),
+            (reponse.StatusCode, (await Json(reponse)).GetProperty("code").GetString()));
+    }
+
+    [Fact]
     public async Task Repondre400PourUnCommentaireTropLong()
     {
         var client = Client();

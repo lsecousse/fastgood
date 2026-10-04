@@ -64,10 +64,12 @@ public static class RoutesApi
     private static IResult EnregistrerNote(string type, long id, string prenom, CorpsNote corps, IDepotNotes depot)
     {
         if (!TypesOsm.Contains(type)) return Erreur(400, "type_invalide", "Type de lieu inconnu.");
-        var message = Note.Valider(prenom, corps.Etoiles, corps.Commentaire);
+        // Le routage laisse %2F encodé dans la valeur : on le décode pour que Note.Valider voie la barre.
+        var saisi = Uri.UnescapeDataString(prenom);
+        var message = Note.Valider(saisi, corps.Etoiles, corps.Commentaire);
         if (message is not null) return Erreur(400, "note_invalide", message);
 
-        depot.Enregistrer(type, id, NomLieu(corps.NomLieu), prenom.Trim(), corps.Etoiles, corps.Commentaire);
+        depot.Enregistrer(type, id, NomLieu(corps.NomLieu), saisi.Trim(), corps.Etoiles, corps.Commentaire);
         return Results.NoContent();
     }
 }

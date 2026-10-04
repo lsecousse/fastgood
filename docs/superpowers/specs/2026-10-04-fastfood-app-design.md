@@ -96,7 +96,7 @@ Géolocalisation refusée ou indisponible : la carte s'ouvre sur le centre de Pa
 App personnelle : le Design System LinkEat (`~/LinkEat/conception-ui/2-Design System/README.md`, `colors_and_type.css`) s'applique pour les couleurs, typographies, rayons, ombres et le toast (`ink-900`, bas d'écran) ; les composants de tableau ne servent pas. `colors_and_type.css` est copié tel quel dans `wwwroot/` ; aucune valeur visuelle hors de ses variables. L'orange (`--accent`) est réservé à l'action principale de l'écran (« Enregistrer ma note » dans la fiche, « Chercher ici » sur la carte).
 
 - Carte plein écran ; bouton « Chercher ici » flottant en haut, visible après un déplacement ; bouton « ma position » en bas à droite.
-- Épingles : pastille ronde par catégorie (couleurs `--tag-1..3`, catégorielles, non sémantiques), moyenne affichée dedans si le lieu est noté.
+- Épingles : pastille ronde par catégorie (couleurs catégorielles non sémantiques : `--tag-1` Fast-food, `--tag-2` Restaurant rapide, `--tag-4` Boulangerie — `--tag-3` écarté car identique à `--accent`, réservé à l'action principale), moyenne affichée dedans si le lieu est noté.
 - Fiche : panneau qui monte du bas (feuille), fermeture par croix 38 px ; étoiles tactiles 44 px ; zone de texte avec compteur « 120 / 280 ».
 - Premier usage : demande « Ton prénom ? » avant la première note (pas au lancement).
 - Respect de l'encoche iPhone (`env(safe-area-inset-*)`), `apple-mobile-web-app-capable`, icône 180 px.

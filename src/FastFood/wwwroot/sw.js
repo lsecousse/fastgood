@@ -1,5 +1,5 @@
-// Enveloppe de l'app en cache ; l'API et les tuiles de carte passent toujours par le réseau.
-// Changer VERSION à chaque livraison de fichiers statiques pour renouveler le cache.
+// Réseau d'abord, repli sur le cache hors ligne. L'API et les tuiles de carte ne sont jamais mises en cache.
+// VERSION ne sert qu'à purger les anciens caches ; ENVELOPPE est vérifiée par tests/ui/sw.test.mjs.
 const VERSION = "fastfood-v1";
 const ENVELOPPE = [
   "/",
@@ -21,9 +21,16 @@ const ENVELOPPE = [
 ];
 
 self.addEventListener("install", (evenement) => {
-  evenement.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(ENVELOPPE)));
+  evenement.waitUntil(precacher());
   self.skipWaiting();
 });
+
+// Un chemin manquant n'empêche pas l'installation : on met en cache ce qui répond.
+async function precacher() {
+  const cache = await caches.open(VERSION);
+  await Promise.all(ENVELOPPE.map((url) =>
+    cache.add(new Request(url, { cache: "reload" })).catch(() => {})));
+}
 
 self.addEventListener("activate", (evenement) => {
   evenement.waitUntil(
@@ -38,5 +45,21 @@ self.addEventListener("fetch", (evenement) => {
   const url = new URL(requete.url);
   const memeOrigine = url.origin === self.location.origin;
   if (requete.method !== "GET" || !memeOrigine || url.pathname.startsWith("/api/")) return;
-  evenement.respondWith(caches.match(requete).then((enCache) => enCache || fetch(requete)));
+  evenement.respondWith(reseauPuisCache(requete));
 });
+
+async function reseauPuisCache(requete) {
+  try {
+    const reponse = await fetch(requete);
+    if (reponse.ok) {
+      const copie = reponse.clone();
+      caches.open(VERSION).then((cache) => cache.put(requete, copie));
+    }
+    return reponse;
+  } catch (erreur) {
+    const enCache = await caches.match(requete);
+    if (enCache) return enCache;
+    if (requete.mode === "navigate") return caches.match("/");
+    throw erreur;
+  }
+}

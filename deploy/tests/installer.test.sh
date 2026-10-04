@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Tests des fonctions pures de deploy/lib.sh. Lancé en CI (Linux) et sur macOS.
+# Pas de -e : un test qui échoue est compté puis on continue ; le code de sortie final reflète le décompte.
 set -uo pipefail
 
 ICI="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

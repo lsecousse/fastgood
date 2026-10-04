@@ -1,3 +1,4 @@
+import { estAnnulation } from "./recherche.mjs";
 import { versParametres } from "./zone.mjs";
 
 const ERREUR_RESEAU = "Connexion impossible, réessaie.";
@@ -7,7 +8,7 @@ export function creerApi(fetchFn) {
   const lieu = (type, id) => `/api/lieux/${type}/${id}/notes`;
 
   return {
-    chercherLieux: (zone) => appeler(fetchFn, `/api/lieux?${versParametres(zone)}`),
+    chercherLieux: (zone, signal) => appeler(fetchFn, `/api/lieux?${versParametres(zone)}`, { signal }),
     listerNotes: (type, id) => appeler(fetchFn, lieu(type, id)),
     enregistrerNote: (type, id, prenom, note) =>
       appeler(fetchFn, `${lieu(type, id)}/${encodeURIComponent(prenom)}`, {
@@ -27,8 +28,8 @@ async function appeler(fetchFn, url, options) {
 async function envoyer(fetchFn, url, options) {
   try {
     return await fetchFn(url, options);
-  } catch {
-    throw new Error(ERREUR_RESEAU);
+  } catch (erreur) {
+    throw estAnnulation(erreur) ? erreur : new Error(ERREUR_RESEAU);
   }
 }
 

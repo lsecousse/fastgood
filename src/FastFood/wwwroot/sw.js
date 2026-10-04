@@ -12,6 +12,7 @@ const ENVELOPPE = [
   "/js/fiche.mjs",
   "/js/notes.mjs",
   "/js/prenom.mjs",
+  "/js/recherche.mjs",
   "/js/toast.mjs",
   "/js/zone.mjs",
   "/vendor/leaflet/leaflet.css",

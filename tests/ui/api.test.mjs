@@ -61,3 +61,15 @@ test("signale l'erreur réseau", async () => {
   const f = async () => { throw new TypeError("fetch failed"); };
   await assert.rejects(creerApi(f).chercherLieux(zone), { message: "Connexion impossible, réessaie." });
 });
+
+test("ApiShould.TransmettreLeSignalDAnnulationAFetch", async () => {
+  const f = fetchEnregistre(reponse(200, []));
+  const { signal } = new AbortController();
+  await creerApi(f).chercherLieux(zone, signal);
+  assert.equal(f.appels[0].options.signal, signal);
+});
+
+test("ApiShould.LaisserPasserLAnnulationSansLaTraduireEnErreurReseau", async () => {
+  const f = async () => { throw new DOMException("annulée", "AbortError"); };
+  await assert.rejects(creerApi(f).chercherLieux(zone), { name: "AbortError" });
+});

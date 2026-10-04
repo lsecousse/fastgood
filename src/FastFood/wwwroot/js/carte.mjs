@@ -2,6 +2,7 @@ import { libelleEpingle } from "./etoiles.mjs";
 
 const L = window.L;
 const TUILES = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const ATTRIBUTION = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const TAILLE_EPINGLE = 34;
 const CLASSES_CATEGORIE = {
   "Fast-food": "categorie-fast-food",
@@ -13,7 +14,7 @@ export const cleLieu = (lieu) => `${lieu.type}/${lieu.id}`;
 
 export function creerCarte(element, surClicLieu) {
   const carte = L.map(element, { zoomControl: false });
-  L.tileLayer(TUILES, { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(carte);
+  L.tileLayer(TUILES, { maxZoom: 19, attribution: ATTRIBUTION }).addTo(carte);
   carte.attributionControl.setPrefix(false);
   const epingles = L.layerGroup().addTo(carte);
   const marqueurs = new Map();
@@ -25,7 +26,8 @@ export function creerCarte(element, surClicLieu) {
   };
 
   return {
-    centrer: (lat, lon, zoom) => carte.setView([lat, lon], zoom),
+    // Sans animation, moveend part avant le retour : l'appelant peut lancer une recherche juste après.
+    centrer: (lat, lon, zoom) => carte.setView([lat, lon], zoom, { animate: false }),
     surDeplacement: (rappel) => carte.on("moveend", rappel),
     zoneVisible: () => zoneDe(carte.getBounds()),
     afficherLieux(lieux) {

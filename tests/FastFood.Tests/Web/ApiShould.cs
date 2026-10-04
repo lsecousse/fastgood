@@ -213,6 +213,18 @@ public sealed class ApiShould : IDisposable
         Assert.Equal((HttpStatusCode.OK, "text/html"), (reponse.StatusCode, reponse.Content.Headers.ContentType?.MediaType));
     }
 
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/js/app.mjs")]
+    public async Task DemanderLaRevalidationDesFichiersStatiques(string chemin)
+    {
+        var client = Client();
+
+        var reponse = await client.GetAsync(chemin);
+
+        Assert.True(reponse.Headers.CacheControl?.NoCache);
+    }
+
     [Fact]
     public async Task ServirLeCssDuDesignSystem()
     {

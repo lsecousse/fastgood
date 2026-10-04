@@ -46,15 +46,17 @@ self.addEventListener("fetch", (evenement) => {
   const url = new URL(requete.url);
   const memeOrigine = url.origin === self.location.origin;
   if (requete.method !== "GET" || !memeOrigine || url.pathname.startsWith("/api/")) return;
-  evenement.respondWith(reseauPuisCache(requete));
+  evenement.respondWith(reseauPuisCache(evenement));
 });
 
-async function reseauPuisCache(requete) {
+// no-cache : le cache HTTP du navigateur revalide auprès du serveur, une mise à jour s'affiche au lancement suivant.
+async function reseauPuisCache(evenement) {
+  const requete = evenement.request;
   try {
-    const reponse = await fetch(requete);
+    const reponse = await fetch(requete, { cache: "no-cache" });
     if (reponse.ok) {
       const copie = reponse.clone();
-      caches.open(VERSION).then((cache) => cache.put(requete, copie));
+      evenement.waitUntil(caches.open(VERSION).then((cache) => cache.put(requete, copie)).catch(() => {}));
     }
     return reponse;
   } catch (erreur) {

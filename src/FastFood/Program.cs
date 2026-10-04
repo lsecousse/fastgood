@@ -14,7 +14,11 @@ services.AddSingleton<IDepotNotes>(_ =>
 
 var app = builder.Build();
 app.UseDefaultFiles();
-app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = CreerTypesMime() });
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = CreerTypesMime(),
+    OnPrepareResponse = fichier => fichier.Context.Response.Headers.CacheControl = "no-cache",
+});
 app.MapApi();
 app.Run();
 

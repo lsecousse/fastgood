@@ -27,6 +27,14 @@ test("ServiceWorkerShould.PrecacherChaqueModuleEtFeuilleDeStyle", () => {
 });
 
 test("ServiceWorkerShould.PreferLeReseauAuCache", () => {
-  assert.match(source, /fetch\(requete\)[\s\S]*caches\.match/);
+  assert.match(source, /fetch\(requete, [^)]*\)[\s\S]*caches\.match/);
   assert.match(source, /cache: "reload"/);
+});
+
+test("ServiceWorkerShould.RevaliderChaqueFichierAupresDuServeur", () => {
+  assert.match(source, /fetch\(requete, \{ cache: "no-cache" \}\)/);
+});
+
+test("ServiceWorkerShould.GarderLeWorkerEnVieJusquALaMiseEnCache", () => {
+  assert.match(source, /waitUntil\([\s\S]*?cache\.put\([\s\S]*?\.catch\(\(\) => \{\}\)/);
 });

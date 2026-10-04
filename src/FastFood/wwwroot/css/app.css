@@ -1,0 +1,146 @@
+/* FastFood — toutes les valeurs visuelles viennent de colors_and_type.css */
+
+html, body { margin: 0; height: 100%; overflow: hidden; }
+button, input, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+.carte { position: fixed; inset: 0; background: var(--bg-sunken); }
+
+/* ── Commandes flottantes ─────────────────────────────── */
+
+.flottant {
+  position: fixed; z-index: 1000;
+  top: calc(env(safe-area-inset-top) + var(--sp-3));
+  left: 50%; transform: translateX(-50%);
+  margin: 0; padding: 0 var(--sp-5); height: 44px;
+  display: flex; align-items: center; white-space: nowrap;
+  border-radius: var(--r-pill); box-shadow: var(--shadow-md);
+  font-size: var(--fs-small); font-weight: 600;
+}
+.chercher { border: 0; background: var(--accent); color: var(--fg-on-dark); cursor: pointer; }
+.zoome { background: var(--bg-raised); color: var(--fg-1); }
+
+.legende {
+  position: fixed; z-index: 1000; margin: 0; padding: var(--sp-2) var(--sp-3);
+  left: calc(env(safe-area-inset-left) + var(--sp-3));
+  bottom: calc(env(safe-area-inset-bottom) + var(--sp-8));
+  list-style: none; background: var(--bg-raised); border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm); color: var(--fg-2);
+  font-size: var(--fs-caption); line-height: var(--lh-caption);
+}
+.legende li { display: flex; align-items: center; gap: var(--sp-2); }
+.pastille { width: 10px; height: 10px; border-radius: var(--r-pill); }
+
+.ma-position {
+  position: fixed; z-index: 1000; width: 44px; height: 44px;
+  right: calc(env(safe-area-inset-right) + var(--sp-3));
+  bottom: calc(env(safe-area-inset-bottom) + var(--sp-8));
+  display: grid; place-items: center; padding: 0; cursor: pointer;
+  background: var(--bg-raised); color: var(--brand);
+  border: 1px solid var(--border-subtle); border-radius: var(--r-pill); box-shadow: var(--shadow-md);
+}
+
+.leaflet-control-attribution { margin-bottom: env(safe-area-inset-bottom) !important; }
+
+/* ── Épingles ─────────────────────────────────────────── */
+
+.categorie-fast-food { background: var(--tag-1); }
+.categorie-restaurant-rapide { background: var(--tag-2); }
+.categorie-boulangerie { background: var(--tag-3); }
+
+.epingle {
+  width: 100%; height: 100%; display: grid; place-items: center; box-sizing: border-box;
+  border: 2px solid var(--bg-0); border-radius: var(--r-pill); box-shadow: var(--shadow-md);
+  color: var(--fg-on-dark); font-family: var(--font-text);
+  font-size: var(--fs-caption); font-weight: 700; line-height: 1;
+}
+
+/* ── Fiche (feuille du bas) ───────────────────────────── */
+
+.fiche {
+  position: fixed; z-index: 1100; left: 0; right: 0; bottom: 0;
+  max-height: 85vh; display: flex; flex-direction: column;
+  background: var(--bg-raised); border-radius: var(--r-xl) var(--r-xl) 0 0; box-shadow: var(--shadow-lg);
+  transform: translateY(105%); visibility: hidden;
+  transition: transform var(--dur-3) var(--ease-out), visibility var(--dur-3);
+}
+.fiche.ouverte { transform: none; visibility: visible; }
+
+.fiche-entete {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3);
+  padding: var(--sp-5) calc(env(safe-area-inset-right) + var(--sp-4)) var(--sp-3) calc(env(safe-area-inset-left) + var(--sp-4));
+  border-bottom: 1px solid var(--border-subtle);
+}
+.fiche-nom { font-size: var(--fs-h4); line-height: var(--lh-h4); overflow-wrap: anywhere; }
+.fiche-categorie, .fiche-moyenne { margin: 0; font-size: var(--fs-small); line-height: var(--lh-small); }
+.fiche-categorie { color: var(--fg-muted); }
+.fiche-moyenne { color: var(--fg-1); font-weight: 600; }
+
+.fermer {
+  flex: none; width: 38px; height: 38px; padding: 0; display: grid; place-items: center; cursor: pointer;
+  background: var(--ink-100); color: var(--fg-1);
+  border: 1px solid var(--border-subtle); border-radius: var(--r-sm);
+}
+
+.fiche-corps {
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--sp-4) calc(env(safe-area-inset-right) + var(--sp-4)) calc(env(safe-area-inset-bottom) + var(--sp-8)) calc(env(safe-area-inset-left) + var(--sp-4));
+}
+
+.titre-section { margin-bottom: var(--sp-2); font-size: var(--fs-body); line-height: var(--lh-body); }
+
+.avis { margin-bottom: var(--sp-5); }
+.notes { list-style: none; margin: 0; padding: 0; }
+.notes li { padding: var(--sp-3) 0; border-top: 1px solid var(--border-subtle); }
+.notes li:first-child { border-top: 0; padding-top: 0; }
+.note-entete { display: flex; align-items: baseline; gap: var(--sp-2); flex-wrap: wrap; }
+.note-prenom { color: var(--fg-1); font-weight: 600; overflow-wrap: anywhere; }
+.note-etoiles { color: var(--brand); letter-spacing: 0.05em; }
+.note-date { margin-left: auto; color: var(--fg-muted); font-size: var(--fs-caption); }
+.note-commentaire { margin: var(--sp-1) 0 0; font-size: var(--fs-small); line-height: var(--lh-small); white-space: pre-line; overflow-wrap: anywhere; }
+
+/* ── Formulaire « Ma note » ───────────────────────────── */
+
+.ma-note { display: flex; flex-direction: column; gap: var(--sp-2); }
+.champ { display: flex; flex-direction: column; gap: var(--sp-1); font-size: var(--fs-small); font-weight: 600; color: var(--fg-1); }
+.champ input, .commentaire {
+  box-sizing: border-box; width: 100%; padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-body); /* 16px : évite le zoom automatique d'iOS */
+  background: var(--bg-0); border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+}
+.champ input { height: 44px; }
+.commentaire { resize: none; }
+.champ input:focus, .commentaire:focus { outline: 2px solid var(--focus-ring); border-color: var(--border-brand); }
+.champ input::placeholder, .commentaire::placeholder { color: var(--fg-faint); }
+
+.lien {
+  align-self: flex-start; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--brand); font-size: var(--fs-small); font-weight: 600;
+}
+
+.etoiles { display: flex; gap: var(--sp-1); }
+.etoile {
+  width: 44px; height: 44px; padding: 0; cursor: pointer;
+  border: 0; border-radius: var(--r-sm); background: none;
+  color: var(--ink-300); font-size: var(--fs-h3); line-height: 1;
+}
+.etoile[aria-pressed="true"] { color: var(--brand); }
+
+.compteur { margin: 0; text-align: right; color: var(--fg-muted); font-size: var(--fs-caption); line-height: var(--lh-caption); }
+
+.action-principale {
+  height: 48px; border: 0; border-radius: var(--r-sm); cursor: pointer;
+  background: var(--accent); color: var(--fg-on-dark); font-weight: 600;
+}
+.action-principale:disabled { background: var(--ink-200); color: var(--fg-disabled); cursor: default; }
+
+/* ── Toast ────────────────────────────────────────────── */
+
+.toast {
+  position: fixed; z-index: 1200; left: 50%; transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom) + var(--sp-3));
+  width: max-content; max-width: calc(100% - 2 * var(--sp-4)); box-sizing: border-box;
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); box-shadow: var(--shadow-lg);
+  background: var(--ink-900); color: var(--fg-on-dark);
+  font-size: var(--fs-small); line-height: var(--lh-small); text-align: center;
+}

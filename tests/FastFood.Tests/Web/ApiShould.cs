@@ -176,4 +176,14 @@ public sealed class ApiShould : IDisposable
 
         Assert.Equal((HttpStatusCode.OK, "text/html"), (reponse.StatusCode, reponse.Content.Headers.ContentType?.MediaType));
     }
+
+    [Fact]
+    public async Task ServirLeCssDuDesignSystem()
+    {
+        var client = Client();
+
+        var reponse = await client.GetAsync("/css/colors_and_type.css");
+
+        Assert.Equal(HttpStatusCode.OK, reponse.StatusCode);
+    }
 }
